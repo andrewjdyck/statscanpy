@@ -16,6 +16,7 @@ import csv
 import zipfile
 import io
 import pandas as pd
+from datetime import datetime
 """@package docstring
 Download StatsCan Metadata from Product Cube
 
@@ -32,6 +33,7 @@ class Product(object):
     def __init__(self, productId, lang='en'):
         self.productId = productId
         self.lang = lang
+        self.camelLang = lang.capitalize()
         self.get_metadata()
 
     ## Documentation for a method.
@@ -42,7 +44,8 @@ class Product(object):
         Retrieve metadata for a given productId.
         """
         url = 'https://www150.statcan.gc.ca/t1/wds/rest/getCubeMetadata'
-        payload = [{'productId': int(productId)}]
+        payload = [{'productId': int(self.productId)}]
+        print('Retreiving metadata for Product ID: ' + self.productId)
         req = requests.post(
             url,
             json=payload
@@ -80,3 +83,89 @@ class Product(object):
         else:
             print('ERROR - cannot find download url for productId: ' + self.productId)
 
+    def read_metadata(self):
+        dim_names = [dim['dimensionName' + self.camelLang] for dim in self.metadata['dimension']]
+        # There are 6 dimensions. Some may have more or less?
+        print('The product has ' + str(len(d)) + ' dimensions.')
+        print('The dimensions are: ' + ', '.join(dim_names))
+        # This is the first dimension. for 14100287, this is geography
+        # Member is a list of all the values the dimension can take
+        # dimension 2 is labour force characterisitics
+        d[0]['member'][0].keys()
+        d[0]['member'][0].values()
+        # One can use the dims to generate a coordinate, which is a better way to download data.
+        # coordinate ID must have 10 digits. The last few are zeros if not defined.
+        # Example: Coordinate ID 1.1.1.1.1.2.0.0.0.0 is for the following:
+        # Canada, Population, Both sexes, 15 years and over, Estimate, Unadjusted
+        coordinateId = '1.1.1.1.1.2.0.0.0.0'
+
+    def get_series_info(self, coordinateId):
+        # coordinateId = '1.1.1.1.1.2.0.0.0.0'
+        self.coordinateId = coordinateId
+        payload = [{'productId': int(self.productId), "coordinate": self.coordinateId}]
+        req = requests.post(
+            url = 'https://www150.statcan.gc.ca/t1/wds/rest/getSeriesInfoFromCubePidCoord',
+            json=payload
+        )
+        if req.json()[0]['status'] == 'SUCCESS':
+            self.series_info = req.json()[0]['object']
+            print('Series info stored in object.series_info')
+        else:
+            print('ERROR: Something went wrong with the API request')
+
+    def get_coordinate_data(self, n=10):
+        payload = [{'productId': int(self.productId), "coordinate": self.coordinateId, "latestN": n}]
+        req = requests.post(
+            url = 'https://www150.statcan.gc.ca/t1/wds/rest/getDataFromCubePidCoordAndLatestNPeriods',
+            json=payload
+        )
+        coord_data = req.json()
+        return(coord_data)
+
+    def get_vector_data(self, startDate=None, endDate=None):
+        if (startDate is not None and endDate is not None):
+            #startDate = "2015-12-01T08:30"
+            #tt = datetime.strptime(startDate, '%Y-%m-%dT%H:%M')
+            #stringtime = tt.strfptime('%Y-%m-%dT%H:%M')
+            #endDate = "2018-03-31T19:00"
+            payload = {
+                "vectorId": [self.series_info['vectorId']], 
+                "startDataPointReleaseDate": startDate,
+                "endDataPointReleaseDate": endDate
+            }
+            req = requests.post(
+                url = 'https://www150.statcan.gc.ca/t1/wds/rest/getBulkVectorDataByRange',
+                json=payload
+            )
+            vector_data = req.json()[0]['object']
+        else:
+            print('Start or end date not properly specified. Returning 10 latest data points instead.')
+            payload = [{'vectorId': self.series_info['vectorId'], "latestN": 10}]
+            req = requests.post(
+                url = 'https://www150.statcan.gc.ca/t1/wds/rest/getDataFromVectorsAndLatestNPeriods',
+                json=payload
+            )
+            vector_data = req.json()[0]['object']
+        return(vector_data)
+
+
+
+    
+    
+    
+payload = {
+    "vectorIds": ["74804"], 
+    "startDataPointReleaseDate": "2015-12-01T08:30",
+    "endDataPointReleaseDate": "2018-03-31T19:00"
+}
+req = requests.post(
+    url = 'https://www150.statcan.gc.ca/t1/wds/rest/getBulkVectorDataByRange',
+    json=payload
+)
+
+
+payload = [{'productId': 14100287, "coordinate": '1.1.1.1.1.2.0.0.0.0'}]
+req = requests.post(
+    url = 'https://www150.statcan.gc.ca/t1/wds/rest/getSeriesInfoFromCubePidCoord',
+    json=payload
+)
