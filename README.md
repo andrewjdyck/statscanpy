@@ -21,3 +21,10 @@ P = scp.Product('14100287')
 P.metadata
 ```
 
+
+## Links
+
+Statistics Canada Web Data Services: https://www.statcan.gc.ca/eng/developers/wds
+
+User guide: https://www.statcan.gc.ca/eng/developers/wds/user-guide
+
