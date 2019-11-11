@@ -1,0 +1,7 @@
+pandas >= 0.25
+requests
+csv
+zipfile
+io
+datetime
+urllib.parse
