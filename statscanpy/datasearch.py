@@ -1,11 +1,13 @@
 import requests
 # from urllib.parse import urlencode, quote_plus, quote
 import urllib.parse
+import pprint
+
 
 class DataSearch(object):
     def __init__(self, search_term):
         self.search_term = search_term
-        self.search_results = self.search(search_term)
+        self.full_results = self.search(search_term)
         self.parse_metadata()      
     
     def search(self, search_term):
@@ -20,14 +22,17 @@ class DataSearch(object):
     
     def parse_metadata(self):
         counter = 0
-        for result in self.search_results:
-            # title = self.search_result['result']['results'][0]['title']
+        self.simple_results = list()
+        for result in self.full_results:
             table_id = result['data_series_issue_identification']['en']
             pid = table_id.split('; ')[0].split(' ')[1]
-            self.search_results[counter]['pid'] = pid
+            self.full_results[counter]['pid'] = pid
             counter += 1
+            self.simple_results.append({'ProductId': pid, 'Title': result['title']})
+
+    def print_results(self):
+        pprint.pprint(self.simple_results)
 
 
 
 
-ds = DataSearch('farm%20debt')
