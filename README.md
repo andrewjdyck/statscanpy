@@ -11,14 +11,18 @@ pip install git+git@github.com:andrewjdyck/statscanpy.git
 ## Usage
 
 ```{python}
-from statscanpy import product as scp
+import statscanpy as scp
+
+# Search for farm debt
+search = scp.datasearch('farm%20debt')
+search.print_results()
 
 # initialize product class for productId 14100287.
 # This will download metadata for the product cube.
-P = scp.Product('14100287')
+product = scp.product('14100287')
 
 # read the product metadata
-P.metadata
+product.metadata
 ```
 
 
