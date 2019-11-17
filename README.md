@@ -5,7 +5,7 @@ A package for using data from Statistics Canada Web Services with python.
 ## Installation
 
 ```{python}
-pip install git+git@github.com:andrewjdyck/statscanpy.git
+pip install git+https://github.com/andrewjdyck/statscanpy#egg=statscanpy
 ```
 
 ## Usage
