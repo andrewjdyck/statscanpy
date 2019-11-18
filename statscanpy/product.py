@@ -34,7 +34,8 @@ class Product(object):
         self.productId = productId
         self.lang = lang
         self.camelLang = lang.capitalize()
-        self.get_metadata()
+        self.metadata = self.get_metadata()
+        self.dimensions = self.get_dimensions()
 
     ## Documentation for a method.
     #  @param self The object pointer.
@@ -52,8 +53,7 @@ class Product(object):
         )
         response = req.json()
         if (response[0]['status'] == "SUCCESS"):
-            self.metadata = response[0]['object']
-            return(self.metadata)
+            return(response[0]['object'])
         else:
             print('ERROR')
 
@@ -147,25 +147,18 @@ class Product(object):
             )
             vector_data = req.json()[0]['object']
         return(vector_data)
-
-
-
     
-    
-    
-payload = {
-    "vectorIds": ["74804"], 
-    "startDataPointReleaseDate": "2015-12-01T08:30",
-    "endDataPointReleaseDate": "2018-03-31T19:00"
-}
-req = requests.post(
-    url = 'https://www150.statcan.gc.ca/t1/wds/rest/getBulkVectorDataByRange',
-    json=payload
-)
+    def get_dimensions(self):
+        dimensions = list()
+        for dim in self.metadata['dimension']:
+            dimensions.append( { key: dim[key] for key in ['dimensionPositionId', 'dimensionNameEn'] } )
+        return( pd.DataFrame(dimensions) )
+
+    def dimension_members_to_df(self):
+        dimension_members = list()
+        for dim_pos_id in self.dimensions:
+            dim = self.metadata['dimension'][dim_pos_id-1]
+            dimension_members.append( { key: dim[key] for key in ['parentMemberId', 'memberId', 'memberNameEn'] } )
+        return(pd.DataFrame(dimension_members))
 
 
-payload = [{'productId': 14100287, "coordinate": '1.1.1.1.1.2.0.0.0.0'}]
-req = requests.post(
-    url = 'https://www150.statcan.gc.ca/t1/wds/rest/getSeriesInfoFromCubePidCoord',
-    json=payload
-)
