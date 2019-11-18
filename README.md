@@ -14,7 +14,7 @@ pip install git+https://github.com/andrewjdyck/statscanpy#egg=statscanpy
 import statscanpy as scp
 
 # Search for farm debt
-search = scp.datasearch('farm%20debt')
+search = scp.datasearch('labour force')
 search.print_results()
 
 # initialize product class for productId 14100287.
