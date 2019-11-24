@@ -25,10 +25,14 @@ class DataSearch(object):
         self.simple_results = list()
         for result in self.full_results:
             table_id = result['data_series_issue_identification']['en']
-            pid = table_id.split('; ')[0].split(' ')[1]
+            try:
+                pid = table_id.split('; ')[0].split(' ')[1]
+            except:
+                pid = result['data_series_issue_identification']['en']
             self.full_results[counter]['pid'] = pid
-            counter += 1
             self.simple_results.append({'ProductId': pid, 'Title': result['title']})
+            counter += 1
+            
 
     def print_results(self):
         pprint.pprint(self.simple_results)

@@ -84,6 +84,7 @@ class Product(object):
             print('ERROR - cannot find download url for productId: ' + self.productId)
 
     def read_metadata(self):
+        d = self.dimensions
         dim_names = [dim['dimensionName' + self.camelLang] for dim in self.metadata['dimension']]
         # There are 6 dimensions. Some may have more or less?
         print('The product has ' + str(len(d)) + ' dimensions.')
@@ -109,6 +110,7 @@ class Product(object):
         )
         if req.json()[0]['status'] == 'SUCCESS':
             self.series_info = req.json()[0]['object']
+            self.vectorId = self.series_info['vectorId']
             print('Series info stored in object.series_info')
         else:
             print('ERROR: Something went wrong with the API request')
@@ -120,7 +122,14 @@ class Product(object):
             json=payload
         )
         coord_data = req.json()
-        return(coord_data)
+        status = coord_data[0]['status']
+        if status == 'SUCCESS':
+            object_data = pd.DataFrame(coord_data[0]['object'])
+            self.vectorIds = object_data.vectorId.unique().tolist()
+            vector_data = pd.DataFrame(coord_data[0]['object']['vectorDataPoint'])
+        else:
+            print('ERROR: the status returned was: ' + status)
+        return(vector_data)
 
     def get_vector_data(self, startDate=None, endDate=None):
         if (startDate is not None and endDate is not None):
@@ -156,9 +165,11 @@ class Product(object):
 
     def dimension_members_to_df(self):
         dimension_members = list()
-        for dim_pos_id in self.dimensions:
-            dim = self.metadata['dimension'][dim_pos_id-1]
-            dimension_members.append( { key: dim[key] for key in ['parentMemberId', 'memberId', 'memberNameEn'] } )
-        return(pd.DataFrame(dimension_members))
+        for dim_pos_id in self.dimensions['dimensionPositionId']:
+            dim = self.metadata['dimension'][dim_pos_id-1]['member']
+            df = pd.DataFrame(dim)
+            dimension_members.append(df)
+            # dimension_members.append( { key: dim[key] for key in ['parentMemberId', 'memberId', 'memberNameEn'] } )
+        return(dimension_members)
 
 
