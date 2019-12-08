@@ -55,7 +55,9 @@ class Product(object):
         if (response[0]['status'] == "SUCCESS"):
             return(response[0]['object'])
         else:
-            print('ERROR')
+            self.errors = response
+            print('ERROR: Metadata for Product ID ' + self.productId + ' could not be loaded.')
+            print('ERROR: see Product.errors() for more info')
 
     def read_cansim_product_mapping(self, Id='all'):
         if (Id == 'all'):

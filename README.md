@@ -19,7 +19,7 @@ search.print_results()
 
 # initialize product class for productId 14100287.
 # This will download metadata for the product cube.
-product = scp.product('14100287')
+product = scp.Product('14100287')
 
 # read the product metadata
 meta = product.metadata
@@ -29,6 +29,16 @@ dims = product.dimensions
 
 # get details on the sub-dimensions
 subdims = product.dimension_members_to_df()
+
+# Canada's seasonally adjusted unemployment rate for ages 15+
+coord = '1.7.1.1.1.1.0.0.0.0'
+
+# Get the information about the data series
+product.get_series_info(coord)
+print(product.series_info)
+
+# Retrieve the most recent 10 observations for the data series
+data = product.get_coordinate_data()
 ```
 
 

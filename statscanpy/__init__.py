@@ -1,7 +1,7 @@
-from statscanpy import Product as PRODUCT
-from statscanpy import DataSearch as DATASEARCH
+from statscanpy.product import Product
+from statscanpy.datasearch import DataSearch
 
 name = 'statscanpy'
 
-product = PRODUCT.Product
-datasearch = DATASEARCH.DataSearch\
+# product = PRODUCT.Product
+# datasearch = DATASEARCH.DataSearch

@@ -2,3 +2,4 @@
 .idea
 *.pyc
 /.vscode
+/statscanpy.egg-info
