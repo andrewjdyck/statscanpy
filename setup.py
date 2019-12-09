@@ -76,6 +76,9 @@ setup(
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
     url='https://github.com/andrewjdyck/statscanpy',  # Optional
+    
+    # This is the source code download url for pypi
+    download_url = 'https://github.com/andrewjdyck/statscanpy/archive/v0.1-alpha.tar.gz',  # Optional
 
     # This should be your name or the name of the organization which owns the
     # project.
