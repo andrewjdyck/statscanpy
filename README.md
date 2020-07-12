@@ -41,6 +41,31 @@ print(product.series_info)
 data = product.get_coordinate_data()
 ```
 
+### Census data retrieval
+
+```{python}
+import statscanpy as sc
+
+# Initiate the class
+census = sc.Census()
+
+# Get Census profile data with default parameters
+result = census.get_cpr_geo()
+print(result)
+
+# Prairies, 2016
+dguid = '2016A00014'
+result = census.get_cpr_geo(dguid=dguid)
+
+# Census geographies
+geos = census.get_census_geo()
+
+# Census indicators
+# Population for Canada geography
+popn = census.get_census_indicator()
+
+```
+
 
 ## Links
 

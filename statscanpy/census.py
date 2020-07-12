@@ -47,7 +47,7 @@ class Census(object):
         url = resource_url.format(**params)
         req = requests.get(url)
         response = req.content.decode()
-        return(json.loads(response))
+        return(self.clean_bad_json(response))
 
     def get_census_geo(self, geos="PR", cpt="00"):
         # Returns a list of 2016 Census geographies and geographic attributes for a geographic level.
@@ -55,11 +55,12 @@ class Census(object):
         params = self.params
         params['geos'] = geos
         params['cpt'] = cpt
-        resource_url = 'https://www12.statcan.gc.ca/rest/census-recensement/CR2016geo.{dtype}?lang={lang}&geos={geos}&cpt={cpt}'
+        resource_url = 'https://www12.statcan.gc.ca/rest/census-recensement/CR2016Geo.{dtype}?lang={lang}&geos={geos}&cpt={cpt}'
         url = resource_url.format(**params)
         req = requests.get(url)
         response = req.content.decode()
-        return(json.loads(response))
+        # return(json.loads(response[2:]))
+        return(self.clean_bad_json(response))
 
     def get_census_geo_indicators(self, dguid="2016A000011124", theme=0):
         # https://www12.statcan.gc.ca/wds-sdw/2016ind1-eng.cfm
@@ -71,7 +72,7 @@ class Census(object):
         url = resource_url.format(**params)
         req = requests.get(url)
         response = req.content.decode()
-        return(json.loads(response))
+        return(self.clean_bad_json(response))
 
     def get_census_indicator(self, indid=1):
         # https://www12.statcan.gc.ca/wds-sdw/2016ind2-eng.cfm
@@ -82,4 +83,9 @@ class Census(object):
         url = resource_url.format(**params)
         req = requests.get(url)
         response = req.content.decode()
+        return(self.clean_bad_json(response))
+
+    def clean_bad_json(self, response):
+        if response[0:2] == '//':
+            response = response[2:]
         return(json.loads(response))
