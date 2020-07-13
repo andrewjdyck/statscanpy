@@ -1,0 +1,14 @@
+{
+    "CD": "Census divisions",
+    "CMACA": "Census metropolitan areas and census agglomerations",
+    "CSD": "Census subdivisions (municipalities)",
+    "CT": "Census tracts",
+    "DA": "Dissemination areas",
+    "DPL": "Designated places",
+    "ER": "Economic regions",
+    "FED": "Federal electoral districts (2013 Representation Order)",
+    "FSA": "Forward sortation areas",
+    "HR": "Health regions (including LHINs and PHUs)",
+    "POPCNTR": "Population centres",
+    "PR": "Canada, provinces and territories"
+}

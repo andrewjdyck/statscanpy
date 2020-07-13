@@ -41,6 +41,31 @@ print(product.series_info)
 data = product.get_coordinate_data()
 ```
 
+### Census data retrieval
+
+```{python}
+import statscanpy as sc
+
+# Initiate the class
+census = sc.Census()
+
+# Get Census profile data with default parameters
+result = census.get_cpr_geo()
+print(result)
+
+# Prairies, 2016
+dguid = '2016A00014'
+result = census.get_cpr_geo(dguid=dguid)
+
+# Census geographies
+geos = census.get_census_geo()
+
+# Census indicators
+# Population for Canada geography
+popn = census.get_census_indicator()
+
+```
+
 
 ## Links
 
@@ -48,3 +73,11 @@ Statistics Canada Web Data Services: https://www.statcan.gc.ca/eng/developers/wd
 
 User guide: https://www.statcan.gc.ca/eng/developers/wds/user-guide
 
+Census web data services: https://www12.statcan.gc.ca/wds-sdw/index-eng.cfm
+
+- https://www12.statcan.gc.ca/wds-sdw/cpr2016-eng.cfm
+- https://www12.statcan.gc.ca/wds-sdw/cr2016geo-eng.cfm
+- https://www12.statcan.gc.ca/wds-sdw/2016ind1-eng.cfm
+- https://www12.statcan.gc.ca/wds-sdw/2016ind2-eng.cfm
+
+Dissemination Geography Unique Identifier (DGUID): https://www150.statcan.gc.ca/n1/pub/92f0138m/92f0138m2019001-eng.htm
