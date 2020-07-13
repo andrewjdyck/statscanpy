@@ -1,9 +1,9 @@
 from unittest import TestCase
 
-import statscanpy
+import statscanpy as sc
 
 class TestSearch(TestCase):
     def test_search_returns(self):
-        search = statscanpy.datasearch('14100287')
+        search = sc.DataSearch('14100287')
         print(search)
         
